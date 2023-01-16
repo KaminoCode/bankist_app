@@ -62,10 +62,12 @@ const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
 //Display the deposits and withdrawls in the transactions part of screen
-const displayMovements = function (movements) {
+const displayMovements = function (movements, sort = false) {
   containerMovements.innerHTML = '';
 
-  movements.forEach(function (mov, i) {
+  const movs = sort ? movements.slice().sort((a, b) => a - b) : movements;
+
+  movs.forEach(function (mov, i) {
     const type = mov > 0 ? 'deposit' : 'withdrawal';
 
     const html = `
@@ -199,6 +201,29 @@ btnClose.addEventListener('click', function (e) {
   inputCloseUsername.value = input.inputClosePin.value = '';
 });
 
+//Event Handler for Loan Button
+btnLoan.addEventListener('click', function (e) {
+  e.preventDefault();
+
+  const amount = Number(inputLoanAmount.value);
+
+  if (amount > 0 && currentAccount.movements.some(mov => mov >= amount * 0.1)) {
+    // Add movement
+    currentAccount.movements.push(amount);
+    // Update UI
+    updateUI(currentAccount);
+  }
+  inputLoanAmount.value = '';
+});
+
+//Event Handler for Sort Button
+let sorted = false;
+btnSort.addEventListener('click', function (e) {
+  e.preventDefault();
+  displayMovements(currentAccount.movements, !sorted);
+  sorted = !sorted;
+});
+
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 // LECTURES
@@ -246,3 +271,13 @@ const totalDepositsUSD = movements
 
 // const account = accounts.find(acc => acc.owner === 'Jessica Davis');
 // console.log(account);
+
+// Strings
+const owners = ['Jonas', 'Zach', 'Adam', 'Martha'];
+
+// Numbers
+console.log(movements);
+
+movements.sort((a, b) => a - b);
+
+console.log(movements);
